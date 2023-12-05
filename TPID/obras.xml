@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<obras>
+     <obra isbn="978-972-0-79310-2">
+          Cartas de Amor de Fernando Pessoa e Ofélia Queiroz
+          <isbn>978-972-0-79310-2</isbn>
+          <autor id="1">Fernando Pessoa</autor>
+          <editora>Assírio &amp; Alvim</editora>
+          <capa>https://img.bertrand.pt/images/cartas-de-amor-de-fernando-pessoa-e-ofelia-queiroz-fernando-pessoa/NDV8MTMwMjk2MjN8MTg3MTg3MTZ8MTU1MTI1OTA4MDAwMA==/100x</capa>
+          <Preço>18,85€</Preço>
+     </obra>
+     <obra isbn="978-972-37-2318-2">
+          Poesia, Ricardo Reis
+          <isbn>978-972-37-2318-2</isbn>
+          <autor id="1">Fernando Pessoa</autor>
+          <editora>Assírio &amp; Alvim</editora>
+          <capa>https://img.bertrand.pt/images/poesia-ricardo-reis-fernando-pessoa/NDV8MTEyMzcwNTJ8MjQ3NjYxODJ8MTY4MzcyOTUzMDAwMA==/100x</capa>
+          <Preço>16,97€</Preço>
+     </obra>
+     <obra isbn="9789722369657">
+          Poesia de Fernando Pessoa
+          <isbn>9789722369657</isbn>
+          <autor id="1">Fernando Pessoa</autor>
+          <editora>Editorial Presença</editora>
+          <capa>https://img.bertrand.pt/images/poesia-de-fernando-pessoa-fernando-pessoa/NDV8MjcyNTI0Mjl8MjM1ODc5OTF8MTY1ODgyNjg5ODAwMA==/100x</capa>
+          <Preço>14,31€</Preço>
+     </obra>
+     <obra isbn="9780241251805">
+          Only Dull People Are Brilliant At Breakfast
+          <isbn>9780241251805</isbn>
+          <autor id="1">Oscar Wilde</autor>
+          <editora>PENGUIN BOOKS LTD</editora>
+          <capa>https://img.bertrand.pt/images/only-dull-people-are-brilliant-at-breakfast-oscar-wilde/NDV8MTc0NDMzODh8MTMwNzc4MDR8MTY3Mjc2OTg5NDAwMA==/100x</capa>
+          <Preço>2,50€</Preço>
+     </obra>
+     <obra isbn="978-972-0-72716-9">
+          O Menino-Estrela
+          <isbn>978-972-0-72716-9</isbn>
+          <autor id="1">Oscar Wilde</autor>
+          <editora>Porto Editora</editora>
+          <capa>https://img.bertrand.pt/images/o-menino-estrela-oscar-wilde/NDV8MTU4NDAyODd8MjQ4OTcwNjJ8MTY4NDIzMDU5NjAwMA==/100x</capa>
+          <Preço>7,75€</Preço>
+     </obra>
+     <obra isbn="9789897075209">
+          Contos Escolhidos de Oscar Wilde
+          <isbn>9789897075209</isbn>
+          <autor id="1">Oscar Wilde</autor>
+          <editora>Fábula</editora>
+          <capa>https://img.bertrand.pt/images/contos-escolhidos-de-oscar-wilde-oscar-wilde/NDV8MTk4NDM1MDh8MTU2ODE1NzZ8MTY0NTQzNzMwNTAwMA==/100x</capa>
+          <Preço>9,95€</Preço>
+     </obra>
+     <obra isbn="9781861478825">
+          The Fairy Tales Of Oscar Wilde
+          <isbn>9781861478825</isbn>
+          <autor id="1">Oscar Wilde</autor>
+          <editora>Anness Publishing</editora>
+          <capa>https://img.bertrand.pt/images/the-fairy-tales-of-oscar-wilde-oscar-wilde/NDV8MjM5NTMzMzd8MTk5ODY5ODl8MTU5NDE0NTkyODAwMA==/100x</capa>
+          <Preço>12,88€</Preço>
+     </obra>
+     <obra isbn="978-972-0-72684-1">
+          O Gigante Egoísta e O Príncipe Feliz
+          <isbn>978-972-0-72684-1</isbn>
+          <autor id="1">Oscar Wilde</autor>
+          <editora>Porto Editora</editora>
+          <capa>https://img.bertrand.pt/images/o-gigante-egoista-e-o-principe-feliz-oscar-wilde/NDV8MTQ4NDUyNTh8MjQyOTA4NDN8MTY3MjIxNzk2MjAwMA==/100x</capa>
+          <Preço>8,85€</Preço>
+     </obra>
+</obras>

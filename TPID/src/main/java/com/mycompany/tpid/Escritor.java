@@ -10,21 +10,20 @@ package com.mycompany.tpid;
  */
 public class Escritor {
 
-    String datanascimento, nacionalidade, nome, fotografia, genero, datamorte, ocupacoes, premios, sexo;
+    String datanascimento, nacionalidade, nome, fotografia, genero, datamorte, ocupacoes, premios;
     int idautor;
     
     
             public Escritor(String datanascimento, String datamorte,
-            String nacionalidade, String nome, String fotografia, String genero, String ocupacoes, String premios, String sexo, int idautor) {
+            String nacionalidade, String nome, String fotografia, String genero, String ocupacoes, String premios, int idautor) {
         this.nome = nome;
         this.datanascimento = datanascimento;
         this.datamorte = datamorte;
         this.nacionalidade = nacionalidade;
         this.fotografia = fotografia;
-        this.sexo = sexo;
         this.genero = genero;
         this.ocupacoes = ocupacoes;
-        this.idautor = idautor;
+        this.idautor = Global.id;
         this.premios = premios;
 
     }
@@ -61,9 +60,6 @@ public class Escritor {
         this.premios = premios;
     }
 
-    public void setSexo(String sexo) {
-        this.sexo = sexo;
-    }
 
     public void setIdautor(int idautor) {
         this.idautor = idautor;
@@ -105,9 +101,6 @@ public class Escritor {
         return premios;
     }
 
-    public String getSexo() {
-        return sexo;
-    }
 
     public int getIdautor() {
         return idautor;

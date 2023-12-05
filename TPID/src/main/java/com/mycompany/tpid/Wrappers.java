@@ -13,6 +13,11 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import net.sf.saxon.s9api.SaxonApiException;
 import net.sf.saxon.s9api.XdmValue;
+import com.mycompany.tpid.Global;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
@@ -20,273 +25,377 @@ import net.sf.saxon.s9api.XdmValue;
  */
 public class Wrappers {
 
-        public static String obtem_datamorte(String autor) throws IOException {
-    String url = "https://pt.wikipedia.org/wiki/";
-    HttpRequestFunctions.httpRequest1(url, autor, "escritores.txt");
-    File file = new File("escritores.txt");
-
-    StringBuilder content = new StringBuilder();
-    Scanner scanner = new Scanner(file);
-
-    while (scanner.hasNextLine()) {
-        String line = scanner.nextLine();
-        content.append(line).append("\n");
+    private static int obtem_idautor() {
+        return Global.id;
     }
 
-    scanner.close();
+    public static String obtem_datamorte() throws IOException {
+        String er = "Morte";
+        Scanner ler = new Scanner(new FileInputStream("escritores.txt"));
+        Pattern p = Pattern.compile(er);
+        String linha;
+        while (ler.hasNextLine()) {
+            linha = ler.nextLine();
+            Matcher m = p.matcher(linha);
+            if (m.find()) {
 
-    String padrao = "\\bAna\s+(\\w+)";
-    Pattern pattern = Pattern.compile(padrao);
-    Matcher matcher = pattern.matcher(content.toString());
+                er = ">([0-9]{2} de [a-z]+)<.*>([0-9]{4})<";
+                Pattern p2 = Pattern.compile(er);
+                ler.nextLine();
+                linha = ler.nextLine();
+                Matcher m2 = p2.matcher(linha);
+                if (m2.find()) {
+                    ler.close();
+                    String data = m2.group(1) + " de " + m2.group(2);
+                    return data;
+                }
+            }
+        }
+        ler.close();
+        return null;
 
-    if (matcher.find()) {
-        String dataMorte = matcher.group(1);
-        return dataMorte;
     }
 
-    return null;
-}
-        
-        private static String obtem_datanascimento(String nome) throws FileNotFoundException {
-            File file = new File("escritores.txt");
+    private static String obtem_datanascimento() throws FileNotFoundException {
+        String er = "Nascimento";
+        Scanner ler = new Scanner(new FileInputStream("escritores.txt"));
+        Pattern p = Pattern.compile(er);
+        String linha;
+        while (ler.hasNextLine()) {
+            linha = ler.nextLine();
+            Matcher m = p.matcher(linha);
+            if (m.find()) {
 
-    StringBuilder content = new StringBuilder();
-    Scanner scanner = new Scanner(file);
-
-    while (scanner.hasNextLine()) {
-        String line = scanner.nextLine();
-        content.append(line).append("\n");
+                er = ">([0-9]{2} de [a-z]+)<.*>([0-9]{4})<";
+                Pattern p2 = Pattern.compile(er);
+                ler.nextLine();
+                linha = ler.nextLine();
+                Matcher m2 = p2.matcher(linha);
+                if (m2.find()) {
+                    ler.close();
+                    String data = m2.group(1) + " de " + m2.group(2);
+                    return data;
+                }
+            }
+        }
+        ler.close();
+        return null;
     }
 
-    scanner.close();
+    public static String[] obtemurlObras(String nome) throws IOException, SaxonApiException {
+        Scanner scanner = new Scanner(System.in);
+        nome = nome.replace(" ", "+");
+        String[] urlObras = new String[5]; // Declaração do array "irlobras" de strings
+        String url = "https://www.bertrand.pt/pesquisa/" + nome;
 
-    String padrao = "\\bAna\s+(\\w+)";
-    Pattern pattern = Pattern.compile(padrao);
-    Matcher matcher = pattern.matcher(content.toString());
+        HttpRequestFunctions.httpRequest1(url, "", "obras.txt");
+        Scanner ler = new Scanner(new FileInputStream("obras.txt"));
+        nome = nome.replace("+", " ");
 
-    if (matcher.find()) {
-        String dataMorte = matcher.group(1);
-        return dataMorte;
+        nome = nome.replaceAll("[^a-zA-Z0-9\\s]", "");
+        nome = nome.replace(" ", "-");
+        nome = nome.toLowerCase();
+        String er = "class=\"track\" href=\"(/livro/[a-z-]*-" + nome + "/[0-9]+)\"";
+        Pattern p = Pattern.compile(er);
+        String linha;
+        int i = 0;
+        while (ler.hasNextLine() && i < 5) {
+            linha = ler.nextLine();
+            Matcher m = p.matcher(linha);
+            if (m.find()) {
+
+                String urlobra = m.group(1);
+                url = "https://www.bertrand.pt/" + urlobra;
+                urlObras[i] = url;
+                i++;
+            }
+        }
+
+        return urlObras;
     }
 
-    return null;
+    public static Obras criaObras(String urlObras, String nome, int i) throws IOException, SaxonApiException {
+        Scanner scanner = new Scanner(System.in);
+
+        HttpRequestFunctions.httpRequest1(urlObras, "", "obra.txt");
+        String isbn = Wrappers.obtem_isbn();
+        String titulo = Wrappers.obtem_titulo();
+
+        String editora = Wrappers.obtem_editora();
+        String capa = Wrappers.obtem_capa();
+
+        String preco = Wrappers.obtem_preco();
+        Obras obra = new Obras(isbn, titulo, nome, capa, editora, Global.id, preco);
+
+        File arquivo = new File("obra.txt");
+        arquivo.delete();
+        return obra;
+
     }
 
-        
-    
     public static Escritor criaEscritor(String nome) throws IOException, SaxonApiException {
- Scanner scanner = new Scanner(System.in);
-
-        
-
-        String datamorte = Wrappers.obtem_datamorte(nome);
-        //System.out.println(datamorte);
-        String datanascimento = Wrappers.obtem_datanascimento(nome);
-        
-        String nacionalidade = Wrappers.obtem_nacionalidade(nome);
+        Scanner scanner = new Scanner(System.in);
+        nome = nome.replace(" ", "_");
+        String url = "https://pt.wikipedia.org/wiki/";
+        HttpRequestFunctions.httpRequest1(url, nome, "escritores.txt");
+        String datamorte = Wrappers.obtem_datamorte();
+        String datanascimento = Wrappers.obtem_datanascimento();
+        String nacionalidade = Wrappers.obtem_nacionalidade();
         String fotografia = Wrappers.obtem_fotografia(nome);
-        String genero = Wrappers.obtem_genero(nome);
-        String ocupacoes = Wrappers.obtem_ocupacoes(nome);
-        String premios = Wrappers.obtem_premios(nome);
-        String sexo = Wrappers.obtem_sexo(nome);
-        int idautor = Wrappers.obtem_idautor(nome);
+        String genero = Wrappers.obtem_genero();
+        String ocupacoes = Wrappers.obtem_ocupacoes();
+        String premios = Wrappers.obtem_premios();
 
-        //Escritor escritor = new Escritor(datanascimento, datamorte, nacionalidade, nome, fotografia, genero, ocupacoes, premios, sexo, idautor);
-                nome = nome.replace("_", " ");
+        nome = nome.replace("_", " ");
 
-                Escritor escritor = new Escritor(null, datamorte, null, nome, null, null, null, null, null, 1);
+        Escritor escritor = new Escritor(datanascimento, datamorte, nacionalidade, nome, fotografia, genero, ocupacoes, premios, Global.id);
 
         return escritor;
-}
+    }
 
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-        /*
-    public static String obtem_nome_autor(String autor) throws IOException {
-    // Codifique a função para obter o nome do autor do website Wikipedia.pt
+    private static String obtem_nacionalidade() throws FileNotFoundException {
 
-    String url = "https://pt.wikipedia.org/wiki/" + autor;
-    HttpRequestFunctions.httpRequest1(url, "", "pagina.html");
+        String er = "Nacionalidade";
+        Scanner ler = new Scanner(new FileInputStream("escritores.txt"));
+        Pattern p = Pattern.compile(er);
+        String linha;
+        while (ler.hasNextLine()) {
+            linha = ler.nextLine();
+            Matcher m = p.matcher(linha);
+            if (m.find()) {
 
-    String padrao = "<title>(.*?) – Wikipédia, a enciclopédia livre</title>";
-    Pattern pattern = Pattern.compile(padrao);
-
-    Scanner ler = new Scanner(new FileInputStream("pagina.html"));
-    while (ler.hasNextLine()) {
-        String linha = ler.nextLine();
-        Matcher matcher = pattern.matcher(linha);
-        if (matcher.find()) {
-            ler.close();
-            return matcher.group(1);
+                er = ">([a-zêâéáí-]+)<";
+                Pattern p2 = Pattern.compile(er);
+                ler.nextLine();
+                linha = ler.nextLine();
+                Matcher m2 = p2.matcher(linha);
+                if (m2.find()) {
+                    ler.close();
+                    String data = m2.group(1);
+                    return data;
+                }
+            }
         }
+        ler.close();
+        return null;
+
     }
-    ler.close();
-    return null;
-}*/
-
-    private static String obtem_nacionalidade(String nome) throws FileNotFoundException {
-File file = new File("escritores.txt");
-
-    StringBuilder content = new StringBuilder();
-    Scanner scanner = new Scanner(file);
-
-    while (scanner.hasNextLine()) {
-        String line = scanner.nextLine();
-        content.append(line).append("\n");
-    }
-
-    scanner.close();
-
-    String padrao = "\\bAna\s+(\\w+)";
-    Pattern pattern = Pattern.compile(padrao);
-    Matcher matcher = pattern.matcher(content.toString());
-
-    if (matcher.find()) {
-        String dataMorte = matcher.group(1);
-        return dataMorte;
-    }
-
-    return null;    }
 
     private static String obtem_fotografia(String nome) throws FileNotFoundException {
-File file = new File("escritores.txt");
+        nome = nome.replace("_", " ");
+        String er = "title=\"" + nome + "\"><img.*src=\\\"([^\\\"]*)\\\"";
+        Scanner ler = new Scanner(new FileInputStream("escritores.txt"));
+        Pattern p = Pattern.compile(er);
+        String linha;
+        while (ler.hasNextLine()) {
+            linha = ler.nextLine();
+            Matcher m = p.matcher(linha);
+            if (m.find()) {
 
-    StringBuilder content = new StringBuilder();
-    Scanner scanner = new Scanner(file);
+                return m.group(1);
+            }
+        }
+        ler.close();
+        return null;
 
-    while (scanner.hasNextLine()) {
-        String line = scanner.nextLine();
-        content.append(line).append("\n");
     }
 
-    scanner.close();
+    private static String obtem_genero() throws FileNotFoundException {
+        String er = "G[êée]nero liter[áa]rio";
+        Scanner ler = new Scanner(new FileInputStream("escritores.txt"));
+        Pattern p = Pattern.compile(er);
+        String linha;
+        while (ler.hasNextLine()) {
+            linha = ler.nextLine();
+            Matcher m = p.matcher(linha);
+            if (m.find()) {
 
-    String padrao = "\\bAna\s+(\\w+)";
-    Pattern pattern = Pattern.compile(padrao);
-    Matcher matcher = pattern.matcher(content.toString());
-
-    if (matcher.find()) {
-        String dataMorte = matcher.group(1);
-        return dataMorte;
+                er = ">(.*?)<";
+                Pattern p2 = Pattern.compile(er);
+                ler.nextLine();
+                linha = ler.nextLine();
+                Matcher m2 = p2.matcher(linha);
+                if (m2.find()) {
+                    List<String> conteudos = new ArrayList<>();
+                    while (m2.find()) {
+                        conteudos.add(m2.group(1));
+                    }
+                    ler.close();
+                    String data = String.join("", conteudos);
+                    return data;
+                }
+            }
+        }
+        ler.close();
+        return null;
     }
 
-    return null;    }
+    private static String obtem_ocupacoes() throws FileNotFoundException {
+        String er = "Ocupação";
+        Scanner ler = new Scanner(new FileInputStream("escritores.txt"));
+        Pattern p = Pattern.compile(er);
+        String linha;
+        while (ler.hasNextLine()) {
+            linha = ler.nextLine();
+            Matcher m = p.matcher(linha);
+            if (m.find()) {
 
-    private static String obtem_genero(String nome) throws FileNotFoundException {
-File file = new File("escritores.txt");
-
-    StringBuilder content = new StringBuilder();
-    Scanner scanner = new Scanner(file);
-
-    while (scanner.hasNextLine()) {
-        String line = scanner.nextLine();
-        content.append(line).append("\n");
+                er = ">(.*?)<";
+                Pattern p2 = Pattern.compile(er);
+                ler.nextLine();
+                linha = ler.nextLine();
+                Matcher m2 = p2.matcher(linha);
+                if (m2.find()) {
+                    List<String> conteudos = new ArrayList<>();
+                    while (m2.find()) {
+                        conteudos.add(m2.group(1));
+                    }
+                    ler.close();
+                    String data = String.join("", conteudos);
+                    return data;
+                }
+            }
+        }
+        ler.close();
+        return null;
     }
 
-    scanner.close();
+    private static String obtem_premios() throws FileNotFoundException {
+        String er = "<td scope=\"row\" style=\"vertical-align: top; text-align: left; font-weight:bold;\">Pr[êée]mios";
+        Scanner ler = new Scanner(new FileInputStream("escritores.txt"));
+        Pattern p = Pattern.compile(er);
+        String linha;
+        while (ler.hasNextLine()) {
+            linha = ler.nextLine();
+            Matcher m = p.matcher(linha);
+            if (m.find()) {
+                er = ">(.*?)<";
+                Pattern p2 = Pattern.compile(er);
+                ler.nextLine();
+                linha = ler.nextLine();
 
-    String padrao = "\\bAna\s+(\\w+)";
-    Pattern pattern = Pattern.compile(padrao);
-    Matcher matcher = pattern.matcher(content.toString());
+                Matcher m2 = p2.matcher(linha);
 
-    if (matcher.find()) {
-        String dataMorte = matcher.group(1);
-        return dataMorte;
+                List<String> conteudos = new ArrayList<>();
+                while (m2.find()) {
+
+                    conteudos.add(m2.group(1));
+                }
+
+                ler.close();
+                String data = String.join("", conteudos);
+                return data;
+
+            }
+        }
+        ler.close();
+        return null;
     }
 
-    return null;    }
+    private static String obtem_isbn() throws FileNotFoundException {
+        String er = "ISBN:";
+        Scanner ler = new Scanner(new FileInputStream("obra.txt"));
+        Pattern p = Pattern.compile(er);
+        String linha;
+        while (ler.hasNextLine()) {
+            linha = ler.nextLine();
+            Matcher m = p.matcher(linha);
+            if (m.find()) {
 
-    private static String obtem_ocupacoes(String nome) throws FileNotFoundException {
-File file = new File("escritores.txt");
+                er = ">([0-9-]+)<";
+                Pattern p2 = Pattern.compile(er);
+                linha = ler.nextLine();
+                Matcher m2 = p2.matcher(linha);
+                if (m2.find()) {
 
-    StringBuilder content = new StringBuilder();
-    Scanner scanner = new Scanner(file);
-
-    while (scanner.hasNextLine()) {
-        String line = scanner.nextLine();
-        content.append(line).append("\n");
+                    return m2.group(1);
+                }
+            }
+        }
+        ler.close();
+        return null;
     }
 
-    scanner.close();
+    private static String obtem_titulo() throws FileNotFoundException {
+        String er = "<h1 id=\"productPageRightSectionTop-title-h1\" class=\"col-lg-12 col-xs-12 col-md-12 col-sm-12 no-padding pull-left\">(.*)</h1>";
+        Scanner ler = new Scanner(new FileInputStream("obra.txt"));
+        Pattern p = Pattern.compile(er);
+        String linha;
+        while (ler.hasNextLine()) {
+            linha = ler.nextLine();
+            Matcher m = p.matcher(linha);
+            if (m.find()) {
 
-    String padrao = "\\bAna\s+(\\w+)";
-    Pattern pattern = Pattern.compile(padrao);
-    Matcher matcher = pattern.matcher(content.toString());
+                return m.group(1);
 
-    if (matcher.find()) {
-        String dataMorte = matcher.group(1);
-        return dataMorte;
+            }
+        }
+        ler.close();
+        return null;
     }
 
-    return null;    }
+    private static String obtem_capa() throws FileNotFoundException {
+        String er = "sizes=\"\\(max-width: 688px\\) 75vw, 25vw\"";
+        Scanner ler = new Scanner(new FileInputStream("obra.txt"));
+        Pattern p = Pattern.compile(er);
+        String linha;
+        while (ler.hasNextLine()) {
+            
+            linha = ler.nextLine();
+            Matcher m = p.matcher(linha);
+                            System.out.println(linha);
 
-    private static String obtem_premios(String nome) throws FileNotFoundException {
-File file = new File("escritores.txt");
+            if (m.find()) {
 
-    StringBuilder content = new StringBuilder();
-    Scanner scanner = new Scanner(file);
-
-    while (scanner.hasNextLine()) {
-        String line = scanner.nextLine();
-        content.append(line).append("\n");
+                er = "srcset=\\\"([^\\\"]*)\\\"";
+                Pattern p2 = Pattern.compile(er);
+                ler.nextLine();
+                linha = ler.nextLine();
+                Matcher m2 = p2.matcher(linha);
+                if (m2.find()) {
+                    ler.close();
+                    return m2.group(1);
+                }
+            }
+        }
+        ler.close();
+        return null;
     }
 
-    scanner.close();
+    private static String obtem_editora() throws FileNotFoundException {
+        String er = "Editor:\\s*<div class=\"info\">(.*)</div>";
+        Scanner ler = new Scanner(new FileInputStream("obra.txt"));
+        Pattern p = Pattern.compile(er);
+        String linha;
+        while (ler.hasNextLine()) {
+            linha = ler.nextLine();
+            Matcher m = p.matcher(linha);
+            if (m.find()) {
 
-    String padrao = "\\bAna\s+(\\w+)";
-    Pattern pattern = Pattern.compile(padrao);
-    Matcher matcher = pattern.matcher(content.toString());
+                return m.group(1);
 
-    if (matcher.find()) {
-        String dataMorte = matcher.group(1);
-        return dataMorte;
+            }
+        }
+        ler.close();
+        return null;
     }
 
-    return null;    }
+    private static String obtem_preco() throws FileNotFoundException {
+        String er = "<div class=\"current\" id=\"productPageRightSectionTop-saleAction-price-current\">(.*)</div>";
+        Scanner ler = new Scanner(new FileInputStream("obra.txt"));
+        Pattern p = Pattern.compile(er);
+        String linha;
+        while (ler.hasNextLine()) {
+            linha = ler.nextLine();
+            Matcher m = p.matcher(linha);
+            if (m.find()) {
 
-    private static String obtem_sexo(String nome) throws FileNotFoundException {
-File file = new File("escritores.txt");
+                return m.group(1);
 
-    StringBuilder content = new StringBuilder();
-    Scanner scanner = new Scanner(file);
-
-    while (scanner.hasNextLine()) {
-        String line = scanner.nextLine();
-        content.append(line).append("\n");
+            }
+        }
+        ler.close();
+        return null;
     }
-
-    scanner.close();
-
-    String padrao = "\\bAna\s+(\\w+)";
-    Pattern pattern = Pattern.compile(padrao);
-    Matcher matcher = pattern.matcher(content.toString());
-
-    if (matcher.find()) {
-        String dataMorte = matcher.group(1);
-        return dataMorte;
-    }
-
-    return null;    }
-
-    private static int obtem_idautor(String nome) {
-        return id;
-    }
-
-    
-
-
 
 }

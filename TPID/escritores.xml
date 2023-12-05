@@ -1,11 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <escritores>
      <escritor id="1">
-          Oscar Wilde
-          <datamorte />
+          Fernando Pessoa
+          <datanascimento>13 de junho de 1888</datanascimento>
+          <datamorte>30 de novembro de 1935</datamorte>
+          <ocupacoes>Poeta, escritor e tradutor</ocupacoes>
+          <premios>Queen Victoria Prize (1903),[1] Prémio Antero de Quental (1934)[2]</premios>
+          <fotografia>//upload.wikimedia.org/wikipedia/commons/thumb/3/32/Pessoa_chapeu.jpg/200px-Pessoa_chapeu.jpg</fotografia>
      </escritor>
      <escritor id="1">
           Oscar Wilde
-          <datamorte>Santos</datamorte>
+          <datanascimento>16 de outubro de 1854</datanascimento>
+          <datamorte>30 de novembro de 1900</datamorte>
+          <nacionalidade>irlandês</nacionalidade>
+          <generos-literarios>Drama, conto, diálogo</generos-literarios>
+          <ocupacoes>poeta, dramaturgo, contista, jornalista, escritor de literatura infantil, romancista, escritor, autor, prosista, jornalista de opinião, ensaísta</ocupacoes>
+          <premios>Newdigate Prize (poesia, Universidade de Oxford, Ravenna, 1878)</premios>
+          <fotografia>//upload.wikimedia.org/wikipedia/commons/thumb/e/e6/Oscar_Wilde_portrait_by_Napoleon_Sarony_-_albumen.jpg/250px-Oscar_Wilde_portrait_by_Napoleon_Sarony_-_albumen.jpg</fotografia>
      </escritor>
 </escritores>

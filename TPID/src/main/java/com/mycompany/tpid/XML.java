@@ -13,6 +13,9 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.Reader;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.jdom2.Document;
@@ -66,4 +69,11 @@ public class XML {
         }
         
     }
+    
+    
+    public static String readFileToString(String filePath) throws IOException {
+        byte[] encodedBytes = Files.readAllBytes(Paths.get(filePath));
+        return new String(encodedBytes, StandardCharsets.UTF_8);
+    }
+    
 }
